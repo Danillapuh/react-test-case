@@ -4,10 +4,10 @@ import { changeConf } from '../store/slices/itemsSlice'
 import { StoreState } from '../store'
 
 
-const baseQuery = fetchBaseQuery({ baseUrl: 'https://hcateringback-dev.unitbeandev.com/api/', headers: {
+const baseQuery = (data: FetchArgs | string, api: any, opt: any)=>fetchBaseQuery({ baseUrl: 'https://hcateringback-dev.unitbeandev.com/api/', headers: {
   Authorization: localStorage.getItem('token') || '',
   "Content-Type": 'application/json'
-}})
+}})(data,api,opt)
 const baseQueryWithReauth: BaseQueryFn<
   string | FetchArgs,
   unknown,
@@ -25,8 +25,10 @@ const baseQueryWithReauth: BaseQueryFn<
     if (data) {
  
       localStorage.setItem('token', data.access_token)
-    
-      result = await baseQuery(args, api, extraOptions)
+      
+      const a = typeof args == 'object' ? {...args, headers: {Aeae: 'a'}} : args
+      result = await baseQuery(a, api, extraOptions)
+      console.log(result)
 
       return result
     } 
@@ -40,10 +42,11 @@ export const Api = createApi({
   endpoints: (bild) => ({
     getItems: bild.query<ItemsResult, {page: number, pageSize: number, sortBy?: keyof Item, sortOrder?: 'ASC' | 'DESC'}>({
       providesTags: ['ItemsPage'],
+      transformErrorResponse: ()=>'',
       query: ({page, pageSize, sortBy = 'name', sortOrder='ASC'})=> `/items?page=${page}&pageSize=${pageSize}&sortBy=${sortBy}&sortOrder=${sortOrder}`,
       async onQueryStarted(arg, { dispatch, queryFulfilled }){
-          const res = await queryFulfilled
-          if(res.data) dispatch(changeConf({total: res.data.total}))
+          /* const res = await queryFulfilled */
+          /* if(res.data) dispatch(changeConf({total: res.data.total})) */
       }
     }),
     addItem: bild.mutation<Item, Partial<Item> & {name: string, measurement_units: string} >({
