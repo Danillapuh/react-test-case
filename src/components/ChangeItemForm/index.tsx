@@ -18,7 +18,7 @@ export const ChangeItemForm: React.FC<{item: Item}> = ({item})=>{
         })
     }
     return <Form ref={formRef} onSubmit={onSubmit} className="max-w-sm mx-auto p-3 flex flex-col h-full"> <div className="flex justify-end">
-            <button onClick={()=>onClickAway()} className="text-neutral-600 hover:text-neutral-900">
+            <button type="button" onClick={()=>onClickAway()} className="text-neutral-600 hover:text-neutral-900">
                 <IoClose size={20}/>
             </button>
         </div>
