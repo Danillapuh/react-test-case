@@ -49,7 +49,7 @@ export const AddItemForm = (props: DetailedHTMLProps<FormHTMLAttributes<HTMLForm
         </div>
     </div>
     <div className="flex justify-center gap-3">
-        <button className="px-6 rounded-md py-2 w-full text-white bg-neutral-600 hover:bg-neutral-700">Отмена</button>
+        <button onClick={()=>onClickAway()} className="px-6 rounded-md py-2 w-full text-white bg-neutral-600 hover:bg-neutral-700">Отмена</button>
         <button disabled={addInfo.isLoading}  type="submit" className={`${addInfo.isLoading ? 'animate-pulse' : ''} px-6 py-2 w-full rounded-md text-white bg-[#a85757] hover:brightness-90`}>Подтвердить</button>
     </div>
   </Form>
