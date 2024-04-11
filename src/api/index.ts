@@ -45,8 +45,8 @@ export const Api = createApi({
       transformErrorResponse: ()=>'',
       query: ({page, pageSize, sortBy = 'name', sortOrder='ASC'})=> `/items?page=${page}&pageSize=${pageSize}&sortBy=${sortBy}&sortOrder=${sortOrder}`,
       async onQueryStarted(arg, { dispatch, queryFulfilled }){
-          /* const res = await queryFulfilled */
-          /* if(res.data) dispatch(changeConf({total: res.data.total})) */
+          const res = await queryFulfilled 
+          if(res.data) dispatch(changeConf({total: res.data.total}))
       }
     }),
     addItem: bild.mutation<Item, Partial<Item> & {name: string, measurement_units: string} >({
