@@ -4,10 +4,12 @@ import { changeConf } from '../store/slices/itemsSlice'
 import { StoreState } from '../store'
 
 
-const baseQuery = (data: FetchArgs | string, api: any, opt: any)=>fetchBaseQuery({ baseUrl: 'https://hcateringback-dev.unitbeandev.com/api/', headers: {
-  Authorization: localStorage.getItem('token') || '',
-  "Content-Type": 'application/json'
-}})(data,api,opt)
+const baseQuery = fetchBaseQuery({ baseUrl: 'https://hcateringback-dev.unitbeandev.com/api/', prepareHeaders(headers, api) {
+  if(localStorage.getItem('token')?.trim())
+    headers.set('Authorization', localStorage.getItem('token')!)
+  headers.set('Content-Type', 'application/json')
+    
+},})
 const baseQueryWithReauth: BaseQueryFn<
   string | FetchArgs,
   unknown,
@@ -26,9 +28,7 @@ const baseQueryWithReauth: BaseQueryFn<
  
       localStorage.setItem('token', data.access_token)
       
-      const a = typeof args == 'object' ? {...args, headers: {Aeae: 'a'}} : args
-      result = await baseQuery(a, api, extraOptions)
-      console.log(result)
+      result = await baseQuery(args, api, extraOptions)
 
       return result
     } 
