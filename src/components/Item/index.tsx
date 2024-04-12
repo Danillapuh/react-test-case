@@ -1,10 +1,10 @@
-import { useState } from "react"
+import { memo, useState } from "react"
 import { Item as ItemType } from "../../api/types"
 import { FaPencil } from "react-icons/fa6"
 import { Drawer } from "../Drawer"
 import { ChangeItemForm } from "../ChangeItemForm"
 
-export const Item: React.FC<{item: ItemType}> = ({item})=>{
+export const Item: React.FC<{item: ItemType}> = memo(({item})=>{
 
     const [open, setOpen] = useState(false)
 
@@ -27,4 +27,4 @@ export const Item: React.FC<{item: ItemType}> = ({item})=>{
             <ChangeItemForm item={item}/>
         </Drawer>
   </div>
-}
+})

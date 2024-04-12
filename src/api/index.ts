@@ -4,6 +4,8 @@ import { changeConf } from '../store/slices/itemsSlice'
 import { StoreState } from '../store'
 
 
+let _tokenPromise: Promise<string> | undefined
+
 const baseQuery = fetchBaseQuery({ baseUrl: 'https://hcateringback-dev.unitbeandev.com/api/', prepareHeaders(headers, api) {
   if(localStorage.getItem('token')?.trim())
     headers.set('Authorization', localStorage.getItem('token')!)
@@ -17,21 +19,25 @@ const baseQueryWithReauth: BaseQueryFn<
 > = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions)
   if (result.error && result.error.status === 401) {
-  
-    const refreshResult = await baseQuery({url:'/auth/login', headers: {}, method: 'POST', body:{
-      login: 'admin',
-      password: 'admin'
-    }}, api, {})
-    
-    const data = refreshResult.data as {access_token: string}
-    if (data) {
- 
-      localStorage.setItem('token', data.access_token)
-      
-      result = await baseQuery(args, api, extraOptions)
 
-      return result
-    } 
+    if(_tokenPromise) await _tokenPromise
+    else _tokenPromise = new Promise(async (res, rej)=>{
+      const refreshResult = await baseQuery({url:'/auth/login', headers: {}, method: 'POST', body:{
+        login: 'admin',
+        password: 'admin'
+      }}, api, {})
+      
+      const data = refreshResult.data as {access_token: string}
+   
+      localStorage.setItem('token', data.access_token)
+      res(data.access_token)
+    })
+    await _tokenPromise
+      
+    result = await baseQuery(args, api, extraOptions)
+
+    _tokenPromise = undefined
+    return result
   }
   return result
 }
